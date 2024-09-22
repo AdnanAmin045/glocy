@@ -1,3 +1,16 @@
+@import url("//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css");
 body{
-    font-family: "Open Sans", sans-serif;
+    font-family:  'Poppins', sans-serif;
 }
+
+.scrollbar-hide {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE and Edge */
+    -ms-overflow-style: none;  /* Internet Explorer and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
