@@ -14,6 +14,7 @@ import GroceryStaples from './Components/productsMenu/groceryStaples';
 import Contact from './Components/contact';
 import LogIn from './Components/logIn';
 import SignUp from './Components/signUp';
+import About from './Components/about';
 
 
 import {
@@ -31,6 +32,14 @@ function App() {
     {
       path: '/signUp',
       element: <SignUp/>
+    },
+    {
+      path: '/about',
+      element: <>
+      <Navbar/>
+      <About/>
+      <Footer />
+    </>
     },
     {
       path: '/home',

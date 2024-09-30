@@ -27,9 +27,9 @@ export default function Navbar() {
 
     useEffect(() => {
         const handleScroll = () => {
-           
+
             if (window.scrollY > window.innerHeight) {
-                setShowButton(true); 
+                setShowButton(true);
             } else {
                 setShowButton(false);
             }
@@ -37,7 +37,7 @@ export default function Navbar() {
 
         window.addEventListener('scroll', handleScroll);
 
-        
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -45,10 +45,10 @@ export default function Navbar() {
 
     const scrollToTop = () => {
         window.scrollTo({
-          top: 0,
-          behavior: 'smooth', 
+            top: 0,
+            behavior: 'smooth',
         });
-      };
+    };
 
 
     return (
@@ -57,7 +57,7 @@ export default function Navbar() {
 
             <div className='flex justify-between items-center py-3'>
                 <ol className='flex gap-7 text-[0.9vw] cursor-pointer'>
-                    <Link className='hover:text-[#2cbef9]'><li>About</li></Link>
+                    <Link to="/about" className='hover:text-[#2cbef9]'><li>About</li></Link>
                     <Link className='hover:text-[#2cbef9]'><li>My Account</li></Link>
                     <Link className='hover:text-[#2cbef9]'><li>Wishlist</li></Link>
                 </ol>
@@ -88,10 +88,14 @@ export default function Navbar() {
             <div className='absolute left-0 right-0 border-b-[0.2vw] text-[#f3f4f8]'></div>
             {/* Second Part */}
             <div className='flex justify-between py-[1vw] items-center'>
-                <div className='flex justify-center items-center gap-2'>
-                    <img className='w-[3vw]' src={cart} alt="cart" />
-                    <p className='text-[2.5vw] text-[#213f8b] font-playpen font-[500]'>QuickCart</p>
+                <div className='flex flex-col justify-center items-center gap-0'>
+                    <div className='flex items-center justify-center'> {/* Changed justify-start to justify-center */}
+                        <img className='w-[3vw]' src={cart} alt="cart" />
+                        <p className='text-[2.5vw] text-[#213f8b] font-playpen font-[500]'>QuickCart</p>
+                    </div>
+                    <p className='text-[0.879vw] text-gray-300 text-center leading-3'>Online Grocery Shopping Center</p>
                 </div>
+
                 {/* <div className='flex items-center p-[1vw] justify-between w-[13vw] h-[4vw] border-[#e8e8eb] border-[0.1vw] rounded-[0.4vw]'>
                     <div className='flex flex-col'>
                         <p className='text-[0.9vw] text-[#9da0a5]'>Your location</p>

@@ -25,7 +25,7 @@ export default function Contact() {
         setErrorMeassage(errors);
         if (Object.keys(errors).length === 0) {
             sendEmail(formValues);
-            toast.success("Sent Successfully");
+            toast.success("Sent Successfully",{duration:2000});
             setFormValues(initialValues);
         }
     }
