@@ -64,12 +64,13 @@ const productItemsSchema = new mongoose.Schema({
 
 const wishlistSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    addedDate: {type: Date,required:true}
+    addedDate: { type: Date, required: true }
 })
 
 const addtoCartSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    addedDate: {type: Date,required:true}
+    addedDate: { type: Date, required: true },
+    quantity: { type: Number, required: true }
 })
 
 const countryDataModel = mongoose.model('countryData', countryDataSchema, 'countryData');
@@ -77,7 +78,7 @@ const customerData = mongoose.model('customerSignUp', customerSignUpSchema, 'cus
 const blogData = mongoose.model("blogData", blogSchema, "blogData");
 const productItemsModel = mongoose.model("productDetail", productItemsSchema, "productDetail")
 const wishlistModel = mongoose.model("wishList", wishlistSchema, 'wishList')
-const addtoCartModel = mongoose.model("addtoCart",addtoCartSchema,"addtoCart")
+const addtoCartModel = mongoose.model("addtoCart", addtoCartSchema, "addtoCart")
 
 
 //      MIDDLEWARE FOR TOKEN VERIFICATION
@@ -167,14 +168,11 @@ app.get("/getProductData", async (req, res) => {
 
 app.get("/wishlist", async (req, res) => {
     try {
-      //  console.log("Fetching product IDs from wishlistModel...");
+        //  console.log("Fetching product IDs from wishlistModel...");
         const productId = await wishlistModel.find({});
-      //  console.log("Product IDs fetched: ", productId);
-
-        console.log("Fetching product data from productItemsModel...");
+        //  console.log("Product IDs fetched: ", productId);
         const productData = await productItemsModel.find({});
-       // console.log("Product data fetched: ", productData);
-
+        // console.log("Product data fetched: ", productData);
         // Check if either productId or productData is empty
         if (!productId.length || !productData.length) {
             console.log("No data found.");
@@ -182,12 +180,12 @@ app.get("/wishlist", async (req, res) => {
         }
 
         const wishlistProductId = productId.map((element) => element.productId.toString());
-       // console.log("Mapped wishlist product IDs: ", wishlistProductId);
+        // console.log("Mapped wishlist product IDs: ", wishlistProductId);
 
         const matchedData = productData.filter((data) =>
             wishlistProductId.includes(data._id.toString())
         );
-       // console.log("Matched data: ", matchedData);
+        // console.log("Matched data: ", matchedData);
 
         const result = matchedData.map((item) => {
             const matchedWishlistItem = productId.find(
@@ -213,8 +211,8 @@ app.get("/wishlist", async (req, res) => {
 
 // Delete Data from the Wishlist 
 
-app.post("/deleteWishlist", async (req,res) =>{
-    const {productId} = req.body
+app.post("/deleteWishlist", async (req, res) => {
+    const { productId } = req.body
     try {
         const result = await wishlistModel.deleteOne({ productId: productId });
         if (result.deletedCount === 0) {
@@ -230,7 +228,7 @@ app.post("/deleteWishlist", async (req,res) =>{
 // Add to Cart
 
 
-app.post("/addtoCart", async (req,res) =>{
+app.post("/addtoCart", async (req, res) => {
     const { productId } = req.body
     try {
         const duplicate = await addtoCartModel.findOne({ productId: productId })
@@ -238,7 +236,7 @@ app.post("/addtoCart", async (req,res) =>{
             res.status(400).json({ message: "Product Already added to cart" });
         }
         else {
-            const newId = new addtoCartModel({ productId,addedDate: new Date() })
+            const newId = new addtoCartModel({ productId, addedDate: new Date(), quantity: 1 })
             await newId.save()
             res.status(200).json({ message: "Product added to cart" });
         }
@@ -247,6 +245,33 @@ app.post("/addtoCart", async (req,res) =>{
         console.log("Error occurred:", err);
     }
 })
+
+
+// Get Add to Cart Data
+
+
+app.get("/getAddtoCart", async (req, res) => {
+    try {
+        const addtoCartData = await addtoCartModel.aggregate([
+            {
+                $lookup: {
+                    from: 'productDetail', // Ensure the collection name matches the one in your MongoDB.
+                    localField: 'productId', // Field in addtoCartModel that you are joining with.
+                    foreignField: '_id', // Field in productItemsModel to join on.
+                    as: 'productDetails' // Output array field where matched product data will be stored.
+                }
+            },
+            {
+                $unwind: '$productDetails' // Flattens the productDetails array into a single object for each addtoCart item.
+            }
+        ]);
+        res.json(addtoCartData); // Send the data as a JSON response.
+    } catch (error) {
+        console.error('Error fetching cart with product details:', error);
+        res.status(500).json({ error: 'Internal server error' }); // Return a proper error response.
+    }
+});
+
 
 
 
@@ -304,7 +329,7 @@ app.post("/addtoWishList", async (req, res) => {
             res.status(400).json({ message: "Product Already added to cart" });
         }
         else {
-            const newId = new wishlistModel({ productId,addedDate: new Date() })
+            const newId = new wishlistModel({ productId, addedDate: new Date() })
             await newId.save()
             res.status(200).json({ message: "Product added to cart" });
         }
