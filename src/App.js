@@ -15,6 +15,11 @@ import Contact from './Components/contact';
 import LogIn from './Components/logIn';
 import SignUp from './Components/signUp';
 import About from './Components/about';
+import Blog from './Components/blog';
+import MyAccountMenuBar from "./Components/MyAccount/accountMenuBar"
+import PersonalInfo from './Components/MyAccount/personalInfo';
+import Wishlist from './Components/wishlist';
+import AddtoCart from './Components/addtoCart';
 
 
 import {
@@ -27,19 +32,70 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <LogIn />
+      element: <>
+        <div className='flex items-center justify-center min-h-screen'>
+          <LogIn />
+        </div>
+      </>
     },
     {
       path: '/signUp',
-      element: <SignUp/>
+      element:
+        <>
+          <div className='flex items-center justify-center min-h-screen'>
+            <SignUp />
+          </div>
+        </>
     },
     {
       path: '/about',
       element: <>
-      <Navbar/>
-      <About/>
-      <Footer />
-    </>
+        <Navbar />
+        <About />
+        <Footer />
+      </>
+    },
+    {
+      path: '/wishlist',
+      element: <>
+        <Navbar />
+        <Wishlist />
+        <Footer />
+      </>
+    },
+    {
+      path: '/accountMenuBar',
+      element:
+        <>
+          <Navbar />
+          <div className='w-full flex justify-center'>
+            <div className='p-[4vw] w-[80%] bg-[#f5f5f7] py-[5vw] my-5 flex justify-between'>
+              <div className='w-[20%]'>
+                <MyAccountMenuBar/>
+              </div>
+              <div className='w-[80%]'>
+                <PersonalInfo />
+              </div>
+            </div>
+          </div>
+          <Footer />
+        </>
+    },
+    {
+      path: '/blog',
+      element: <>
+        <Navbar />
+        <Blog />
+        <Footer />
+      </>
+    },
+    {
+      path: '/addtoCart',
+      element: <>
+        <Navbar />
+        <AddtoCart />
+        <Footer />
+      </>
     },
     {
       path: '/home',

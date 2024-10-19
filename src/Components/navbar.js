@@ -12,8 +12,10 @@ import coffee from '../Resources/coffee-cup-black.png'
 import coffeeColor from '../Resources/coffee-cup-color.png'
 
 import protect from '../Resources/protection.png'
+import empty_cart from "../Resources/empty_cart.png"
 
 import cart from '../Resources/cart.png'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -23,7 +25,35 @@ export default function Navbar() {
     const [bakery_img, setBakery_img] = useState(bakery)
     const [coffee_img, setCoffee_img] = useState(coffee)
 
+
+    const [showPopUpAccount, setPopUpAccount] = useState()
+    const [showPopUpCart, setPopUpCart] = useState()
     const [showButton, setShowButton] = useState(false);
+
+
+
+
+    const [userName, setUserName] = useState('')
+    const [userEmail, setEmail] = useState('')
+    const [userPhoneNo, setPhoneNo] = useState('')
+
+    const navigate = useNavigate()
+
+
+    //  GET DATA FROM THE PAYLOAD
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const tokenParts = token.split(".");
+            const base64Payload = tokenParts[1];
+            const payload = JSON.parse(atob(base64Payload));
+
+            setUserName(payload.data.name);
+            setEmail(payload.data.email);
+            setPhoneNo(`${payload.data.countryCode} ${payload.data.contactNo}`);
+        }
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -51,6 +81,12 @@ export default function Navbar() {
     };
 
 
+    const logOutAccount = () => {
+        localStorage.removeItem("token")
+        navigate("/")
+    }
+
+
     return (
         <div className='px-[10vw] pt-[0.5vw]'>
             {/* First Part */}
@@ -58,8 +94,8 @@ export default function Navbar() {
             <div className='flex justify-between items-center py-3'>
                 <ol className='flex gap-7 text-[0.9vw] cursor-pointer'>
                     <Link to="/about" className='hover:text-[#2cbef9]'><li>About</li></Link>
-                    <Link className='hover:text-[#2cbef9]'><li>My Account</li></Link>
-                    <Link className='hover:text-[#2cbef9]'><li>Wishlist</li></Link>
+                    <Link to="/accountMenuBar" className='hover:text-[#2cbef9]'><li>My Account</li></Link>
+                    <Link to="/wishlist" className='hover:text-[#2cbef9]'><li>Wishlist</li></Link>
                 </ol>
                 <div className='flex gap-7 items-center'>
 
@@ -107,14 +143,46 @@ export default function Navbar() {
                     <input className='h-[60%] w-[100%] border-none bg-transparent outline-none text-[#7e8c9d]' type="text" placeholder='Search for products...' />
                     <i className="pl-[1vw] text-[2vw] text-[#6b6a6f] ri-search-line"></i>
                 </div>
-                <div className='flex gap-2'>
-                    <div className='h-[3vw] w-[3vw] border-[0.1vw] border-[#e8e8eb] rounded-[50%] flex justify-center items-center'>
+                <div className='flex gap-2 relative'>
+                    <div className='h-[3vw] w-[3vw] border-[0.1vw] border-[#e8e8eb] rounded-[50%] flex justify-center items-center' onMouseEnter={() => setPopUpAccount(true)} onMouseLeave={() => setPopUpAccount(false)}>
                         <i className="text-[1.5vw] ri-user-line"></i>
                     </div>
-                    <div className='relative h-[3vw] w-[3vw] border-[0.1vw] border-[#e8e8eb] rounded-[50%]  bg-[#ffeee5] flex justify-center items-center item'>
-                        <div className='absolute -top-1 right-0 h-[1vw] w-[1vw] rounded-full bg-[#f24550] flex justify-center items-center text-white text-[0.8vw]'>0</div>
-                        <i className="text-[1.5vw] text-[#ea2a0f] ri-shopping-cart-line"></i>
-                    </div>
+                    {showPopUpAccount && (<div className='absolute top-full left-[-5vw] w-[18vw] h-[18vw] bg-white rounded-xl z-10 shadow-xl' onMouseEnter={() => setPopUpAccount(true)} onMouseLeave={() => setPopUpAccount(false)}>
+                        <div className='flex justify-center flex-col items-start p-3'>
+                            <div className='flex self-center justify-center items-center gap-4 flex-col'>
+                                <div className='w-[5vw] h-[5vw] rounded-[50%] flex justify-center items-center bg-[#e8e9ed]'>
+                                    <i className="text-[1.7vw] ri-user-line"></i>
+                                </div>
+                                <h1 className='text-[1vw] uppercase font-bold'>{userName}</h1>
+                            </div>
+                            <div className='flex items-center gap-4 mt-4'>
+                                < i className="text-[1vw] text-[#2cbdf9] ri-mail-send-fill"></i>
+                                <h1 className='text-[1vw]'>{userEmail}</h1>
+                            </div>
+                            <div className='flex items-center gap-4'>
+                                < i className="text-[1vw] text-[#2cbdf9] ri-phone-line"></i>
+                                <h1 className='text-[1vw]'>{userPhoneNo}</h1>
+                            </div>
+                            <button className='self-center text-[0.9vw] mt-4 h-[2.5vw] w-[8.5vw] rounded-md bg-red-600 text-white' onClick={logOutAccount}>LogOut</button>
+                        </div>
+
+                    </div>)}
+
+                    <Link to="/addtoCart">
+                        <div onMouseEnter={() => setPopUpCart(true)} onMouseLeave={() => setPopUpCart(false)} className='relative h-[3vw] w-[3vw] border-[0.1vw] border-[#e8e8eb] rounded-[50%]  bg-[#ffeee5] flex justify-center items-center item'>
+                            <div className='absolute -top-1 right-0 h-[1vw] w-[1vw] rounded-full bg-[#f24550] flex justify-center items-center text-white text-[0.8vw]'>0</div>
+                            <i className="text-[1.5vw] text-[#ea2a0f] ri-shopping-cart-line"></i>
+                        </div>
+                    </Link>
+
+                    {showPopUpCart && (
+                        <div className='absolute top-full flex justify-center items-center left-[-10vw] w-[22vw] h-[15vw] bg-white rounded-xl z-10 shadow-xl' onMouseEnter={() => setPopUpCart(true)} onMouseLeave={() => setPopUpCart(false)}>
+                            <div className='flex justify-center flex-col gap-4 items-center p-3'>
+                                <img className='w-[3vw]' src={empty_cart} alt="" />
+                                <p className='text-[0.9vw]'>No products in the cart.</p>
+
+                            </div>
+                        </div>)}
 
                 </div>
             </div>

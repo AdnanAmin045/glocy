@@ -58,7 +58,6 @@ export default function SignUp() {
             setFormValues(initialValues);
             setCountryInput("");
             navigate("/",{state:{showToaster:true}})
-
         }
 
     }
