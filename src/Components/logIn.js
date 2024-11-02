@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import cart from '../Resources/cart.png'
 import { Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
@@ -22,11 +22,11 @@ export default function LogIn() {
 
     const navigate = useNavigate();
 
-    const location = useLocation()
+    const location = useLocation();
 
-    const [inValidPopUp,setInvalidPopUp] = useState('hidden')
+    const [inValidPopUp, setInvalidPopUp] = useState('hidden')
 
-    const effectRan = useRef(false);  
+    const effectRan = useRef(false);
 
     /*  **********************************
 
@@ -45,7 +45,7 @@ export default function LogIn() {
 
 
 
-    const emptyBoxes = (value) =>{    
+    const emptyBoxes = (value) => {
         return value.email.length === 0 || value.password.length === 0
     }
 
@@ -63,27 +63,30 @@ export default function LogIn() {
         e.preventDefault()
         const response = await checkValues(formValuesLogIn)
         if (response && !(emptyBoxes(formValuesLogIn))) {
-           navigate('/home')
-         // console.log(localStorage.getItem('token'))
+            const res = await axios.post("/getUserId", { email: formValuesLogIn.email })
+            const userId = res.data.customerId
+            localStorage.setItem('userID',userId );
+            console.log(userId)
+            navigate('/home')
         }
-        else{
-            if(inValidPopUp === "hidden")
-                setInvalidPopUp('inline-block')    
+        else {
+            if (inValidPopUp === "hidden")
+                setInvalidPopUp('inline-block')
         }
     }
 
     const checkValues = async (values) => {
-       try{
-           const response = await axios.post("/",values)
-           if(response.status === 200){
-               localStorage.setItem("token", response.data.token)
-               return true
+        try {
+            const response = await axios.post("/", values)
+            if (response.status === 200) {
+                localStorage.setItem("token", response.data.token)
+                return true
             }
-            else{
+            else {
                 return false
             }
         }
-        catch(err){
+        catch (err) {
             return false
         }
     };
@@ -91,7 +94,7 @@ export default function LogIn() {
 
 
 
-    
+
     return (
         <>
             <Toaster richColors position='top-right' />
@@ -138,7 +141,7 @@ export default function LogIn() {
                             <h1 className='text-[0.9vw]'>Remember me</h1>
                         </div> */}
                         <Link to="/home" className='w-[100%]'><button className='w-[100%] h-[7.5vw] sm:h-[2.5vw] rounded-sm sm:rounded-md  text-[2vw] sm:text-[1.4vw] bg-[#2cbef9] text-white hover:shadow-2xl transition-all duration-500' onClick={submitData}>LogIn</button></Link>
-                        <p className='text-[2vw] sm:text-[0.9vw]'>Don't have account? <Link to="/signUp"><span className= 'text-[2vw] sm:text-[0.9vw] text-[#2cbef9] font-semibold'>SignUp</span></Link></p>
+                        <p className='text-[2vw] sm:text-[0.9vw]'>Don't have account? <Link to="/signUp"><span className='text-[2vw] sm:text-[0.9vw] text-[#2cbef9] font-semibold'>SignUp</span></Link></p>
                     </form>
                 </div>
             </div>

@@ -9,6 +9,7 @@ export default function FruitsVegetables() {
     const [wishlistDuplicate, setWishlistDuplicate] = useState()
     const [showWishlistPopUp, setWishlistPopUp] = useState(false)
     const [wishlistTitle, setWishlistTitle] = useState("")
+    const userId = localStorage.getItem("userID")
 
     const handleMouseEnter = (id) => {
         setShowMaxFav(id);
@@ -35,21 +36,18 @@ export default function FruitsVegetables() {
     //Add to wishlist API Call
 
     const addtoWishList = async (id) => {
-        console.log("function call")
         try {
-            const response = await axios.post("/addtoWishList", { productId: id });
+            const response = await axios.post("/addtoWishList", { productId: id,userId:userId });
             if (response.status === 200) {
                 setWishlistDuplicate(false);
             } else if (response.status === 400 || response.status === 500) {
                 setWishlistDuplicate(true);
             }
-            console.log('Product added to wishlist');
         } catch (error) {
             console.error('Error adding product to wishlist:', error);
             setWishlistDuplicate(true)
         }
     }
-    //  console.log(wishlistDuplicate)
 
 
     // Add to Cart Product
@@ -57,12 +55,10 @@ export default function FruitsVegetables() {
 
     const addtoCartProduct = async (id) => {
         try {
-          //  console.log("Add to Cart Function");
-            const response = await axios.post("/addtoCart", { productId: id });
+            const response = await axios.post("/addtoCart", { productId: id,userId:userId });
             if(response.status === 200){
                 console.log("Data has been added")
             }
-            //console.log("Full Response:", response);
         } catch (err) {
             console.log("Error message:", err);
         }

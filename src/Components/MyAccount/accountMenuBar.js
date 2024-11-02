@@ -28,7 +28,6 @@ export default function AccountMenuBar() {
           }
         });
         if (response.status === 200) {
-          console.log(response.status)
           setTokenState(true)
         }
         else {
